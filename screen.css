@@ -87,3 +87,13 @@ aside {
 .clearfix:before, .clearfix:after { content: ""; display: table; }
 .clearfix:after { clear: both; }
 .clearfix { *zoom: 1; }
+
+.hidden{
+    opacity: 0;
+}
+
+.animaiton-complite{
+    position: relative;
+    opacity: 1;
+    right: 0px;
+}
