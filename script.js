@@ -1,71 +1,45 @@
-$(document).ready(function() {
-
-
-	// create revealOnScroll method
-	jQuery.fn.revealOnScroll = function(direction, speed) {
-
-		var windowHeight = $(window).height();
-		var windowScrollPosTop = $(window).scrollTop();
-		var windowScrollPosBottom = windowHeight + windowScrollPosTop;
-
-		return this.each(function() {
-			
-			var objectOffset = jQuery(this).offset();
-			var objectOffsetTop = objectOffset.top;
-			
-			// only hide and offset elements once
-			if (!jQuery(this).hasClass("hidden")) {
-				
-				// if argument is "right"
-				if (direction == "right") {
-					jQuery(this).css({
-						"opacity"	: 0,
-						"right"		: "700px",
-						"position"	: "relative"
-					});
-				// if argument is "left"
-				} else {
-					jQuery(this).css({
-						"opacity"	: 0,
-						"right"		: "-700px",
-						"position"	: "relative"
-					});
-					
-				} // end if argument is right/left check
-				
-				jQuery(this).addClass("hidden");	
-			} // end only hide and offset elements once logic
-			
-			// only reveal the element once
-			if (!jQuery(this).hasClass("animation-complete")) {
-				
-				// if the page has been scrolled far enough to reveal the element
-				if (windowScrollPosBottom > objectOffsetTop) {
-
-					jQuery(this).animate({"opacity" : 1, "right" : 0}, speed)
-					.addClass("animation-complete");
-				} // end if the page has scrolled enough check
-
-			} // end only reveal the element once
-			
-		});
-	} // end revealOnScroll function
-
-	 //end of function
-
-
-	// Position 
-	$(window).scroll(function(){
-
-		// windowHeight = $(window).height();
-		// windowScrollPosTop = $(window).scrollTop();
-		// windowScrollPosBottom = windowHeight + windowScrollPosTop;
+jQuery(document).ready(function() {
+	
+	// define variables
+	var navOffset, scrollPos = 0;
+	
+	// add utility wrapper elements for positioning
+	jQuery("nav").wrap('<div class="nav-placeholder"></div>');
+	jQuery("nav").wrapInner('<div class="nav-inner"></div>');
+	jQuery(".nav-inner").wrapInner('<div class="nav-inner-most"></div>');
+	
+	// function to run on page load and window resize
+	function stickyUtility() {
 		
-		$(".sidebar").revealOnScroll("right", 2000);
-		$(".example-photo").revealOnScroll("left",2000);
-		$("ul li").revealOnScroll("left", 2000);
+		// only update navOffset if it is not currently using fixed position
+		if (!jQuery("nav").hasClass("fixed")) {
+			navOffset = jQuery("nav").offset().top;
+		}
+		
+		// apply matching height to nav wrapper div to avoid awkward content jumps
+		jQuery(".nav-placeholder").height(jQuery("nav").outerHeight());
+		
+	} // end stickyUtility function
+	
+	// run on page load
+	stickyUtility();
+	
+	// run on window resize
+	jQuery(window).resize(function() {
+		stickyUtility();
 	});
 	
-
+	// run on scroll event
+	jQuery(window).scroll(function() {
+		
+		scrollPos = jQuery(window).scrollTop();
+		
+		if (scrollPos >= navOffset) {
+			jQuery("nav").addClass("fixed");
+		} else {
+			jQuery("nav").removeClass("fixed");
+		}
+		
+	});
+	
 });
-
